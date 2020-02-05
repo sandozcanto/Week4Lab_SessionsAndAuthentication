@@ -18,7 +18,7 @@ public class AccountService {
         
         User user;
         
-        if (username.equals("adam")|| username.equals("betty")&&password.equals("password")){
+        if ((username.equals("adam")|| username.equals("betty"))&&password.equals("password")){
             
             
             user = new User(username, null);

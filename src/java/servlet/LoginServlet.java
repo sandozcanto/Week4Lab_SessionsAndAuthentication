@@ -50,16 +50,25 @@ public class LoginServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession();
+
+        //Object userReturn = session.getAttribute("sessionUser");
         
         String logout = request.getParameter("logout");
 
+        if (session.getAttribute("sessionUser") != null) {
+
+            response.sendRedirect(request.getContextPath()+"/home");
+        } else {
+            response.sendRedirect(request.getContextPath()+"/login");
+        }
+
         if (logout != null) {
 
-            request.setAttribute("message", "User has successfully logged out");
+            request.setAttribute("message", "You have successfully logged out.");
             session.invalidate();
 
         } else {
-            getServletContext().getRequestDispatcher("/WEB-INF/login.jsp").forward(request, response);
+            //getServletContext().getRequestDispatcher("/WEB-INF/login.jsp").forward(request, response);
         }
     }
 
@@ -74,29 +83,31 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         HttpSession session = request.getSession();
-        
+
         String user = request.getParameter("user");
         String password = request.getParameter("password");
-        
-         if (user != null && password  != null) {
-             
-             AccountService account = new AccountService();
-             
-             User validUser = account.login(user, password);
-             
-             if (validUser!=null){
-                 
-                 session.setAttribute("sessionUser", validUser.getName());
-                 response.sendRedirect("/home");
-             } else{
-                 request.setAttribute("message","Invalid");
-                 getServletContext().getRequestDispatcher("/WEB-INF/login.jsp").forward(request, response);
-             }
-             
-         }
-        
+
+        if (user != null && password != null) {
+
+            AccountService account = new AccountService();
+
+            User validUser = account.login(user, password);
+
+            if (validUser != null) {
+                
+                System.out.println(validUser.getName());
+                
+                session.setAttribute("sessionUser", validUser.getName());
+                response.sendRedirect(request.getContextPath()+"/home");
+            } else {
+                request.setAttribute("message", "Invalid");
+                getServletContext().getRequestDispatcher("/WEB-INF/login.jsp").forward(request, response);
+            }
+
+        }
+
     }
 
     /**
