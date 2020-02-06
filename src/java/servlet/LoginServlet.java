@@ -51,24 +51,20 @@ public class LoginServlet extends HttpServlet {
 
         HttpSession session = request.getSession();
 
-        //Object userReturn = session.getAttribute("sessionUser");
-        
         String logout = request.getParameter("logout");
 
         if (session.getAttribute("sessionUser") != null) {
 
-            response.sendRedirect(request.getContextPath()+"/home");
+            response.sendRedirect(request.getContextPath() + "/home");
         } else {
-            response.sendRedirect(request.getContextPath()+"/login");
+            response.sendRedirect(request.getContextPath() + "/login");
         }
 
         if (logout != null) {
 
-            request.setAttribute("message", "You have successfully logged out.");
-            session.invalidate();
+            session.removeAttribute("sessionUser");
+            session.setAttribute("message", "You have successfully logged out.");
 
-        } else {
-            //getServletContext().getRequestDispatcher("/WEB-INF/login.jsp").forward(request, response);
         }
     }
 
@@ -96,11 +92,11 @@ public class LoginServlet extends HttpServlet {
             User validUser = account.login(user, password);
 
             if (validUser != null) {
-                
+
                 System.out.println(validUser.getName());
-                
+
                 session.setAttribute("sessionUser", validUser.getName());
-                response.sendRedirect(request.getContextPath()+"/home");
+                response.sendRedirect(request.getContextPath() + "/home");
             } else {
                 request.setAttribute("message", "Invalid");
                 getServletContext().getRequestDispatcher("/WEB-INF/login.jsp").forward(request, response);
